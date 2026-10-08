@@ -1,7 +1,9 @@
+import { TestKey } from "./testKey";
+
 export const Home = () => {
   return (
     <main>
-      <h1>Home</h1>
+      <TestKey />
     </main>
   );
 };
