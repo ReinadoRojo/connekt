@@ -1,0 +1,8 @@
+Implementation of "Connekt"
+
+Req:
+- Auth via private & public key
+- Messages
+- Real-time online status
+- Group chats
+- Profile
