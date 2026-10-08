@@ -1,4 +1,4 @@
-import { render, route } from "rwsdk/router";
+import { prefix, render, route } from "rwsdk/router";
 import { defineApp } from "rwsdk/worker";
 
 import { Document } from "@/app/document";
@@ -6,6 +6,52 @@ import { setCommonHeaders } from "@/app/headers";
 import { Home } from "@/app/pages/home";
 
 export type AppContext = {};
+
+const authRoutes = [
+  route("/signin", {
+    get: () => { },
+    post: () => { },
+  }),
+
+  route("/signup", {  // Create new user
+    get: () => { },
+    post: () => { }
+  }),
+
+  route("/signout", {
+    post: () => { },
+  }),
+]
+const chatRoutes = [
+  route("/:id", {
+    get: () => { },
+  }),
+  route("/:id/messages", {
+    get: () => { },   // Get messages
+    post: () => { },  // Send a message
+    delete: () => { },// Delete a message
+    put: () => { },   // Edit a message
+  })
+]
+const attachmentRoutes = [
+  route('/upload', {
+    post: () => { },
+  }),
+  route('/:id', {
+    get: () => { },
+  }),
+]
+const profileRoutes = [
+  route('/me', {
+    get: () => { },
+    patch: () => { },
+  }),
+  route('/:id', {
+    get: ({ request, params, ctx}) => {
+      return new Response(null, { status: 200 })
+    },
+  }),
+]
 
 export default defineApp([
   setCommonHeaders(),
@@ -24,59 +70,21 @@ export default defineApp([
     /*
     >>> AUTH <<<
     */
-    route("/auth/signin", {
-      get: () => { },
-    }),
-    route("/auth/signout", {
-      post: () => { },
-    }),
-
-    // api
-    route("/api/auth/create", {  // Create new user
-      post: () => { }
-    }),
-
-    route("/api/auth/request", { // Request login challenge
-      get: () => { }
-    }),
-    route("/api/auth/verify", {  // Verify login challenge
-      post: () => { }
-    }),
+    prefix("/auth", authRoutes),
 
     /*
     >>> CHATS <<<
     */
-    route("/chat/:id", {
-      get: () => { },
-    }),
-    route("/chat/:id/messages", {
-      get: () => { },   // Get messages
-      post: () => { },  // Send a message
-      delete: () => { },// Delete a message
-      put: () => { },   // Edit a message
-    }),
+    prefix("/chat", chatRoutes),
 
     /*
     >>> ATTACHMENTS <<<
     */
-    route("/attachment/upload", {
-      post: () => { },
-    }),
-    route("/attachment/:id", {
-      get: () => { },
-    }),
+    prefix("/attachment", attachmentRoutes),
 
     /*
     >>> PROFILE <<<
     */
-    route("/users/me", {
-      get: () => { },
-      patch: () => { },
-    }),
-    route("/users/:id", {
-      get: ({ request, params, ctx}) => {
-        return new Response(null, { status: 200, statusText: "wtf"})
-      },
-    }),
+    prefix("/users", profileRoutes)
   ]),
 ]);
