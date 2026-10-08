@@ -5,7 +5,7 @@ export const Document: React.FC<{ children: React.ReactNode }> = ({
     <head>
       <meta charSet="utf-8" />
       <meta name="viewport" content="width=device-width, initial-scale=1" />
-      <title>@redwoodjs/starter-minimal</title>
+      <title>Page title</title>
       <link rel="preconnect" href="https://fonts.googleapis.com" />
       <link
         rel="preconnect"
