@@ -18,6 +18,7 @@ export const Document: React.FC<{ children: React.ReactNode }> = ({
         precedence="first"
       />
       <link rel="modulepreload" href="/src/client.tsx" />
+      <link rel="icon" href="/favicon.svg" />
     </head>
     <body>
       {children}
