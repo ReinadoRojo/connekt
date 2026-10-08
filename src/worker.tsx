@@ -5,6 +5,8 @@ import { Document } from "@/app/document";
 import { setCommonHeaders } from "@/app/headers";
 import { Home } from "@/app/pages/home";
 
+import { PsignUp } from "@/routes/auth"
+
 export type AppContext = {};
 
 const authRoutes = [
@@ -15,7 +17,7 @@ const authRoutes = [
 
   route("/signup", {  // Create new user
     get: () => { },
-    post: () => { }
+    post: PsignUp,
   }),
 
   route("/signout", {
