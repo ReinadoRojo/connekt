@@ -1,5 +1,4 @@
 "use client";
-import { toBuffer } from "node:ffi";
 import { encode } from "./z85";
 
  // Server will never use Web Crypto API
