@@ -1,0 +1,5 @@
+export enum CryptoActions {
+  CREATE_MASTER_PAIR,
+  CREATE_ONECLICK_PAIR,
+  DERIVATE_MASTER_PASSWD,
+}
