@@ -19,7 +19,7 @@ export const SignUpRequest = object({
       return !reservedNames.some(prohName => { // '!' before so we only set as fail if name includes a prohibited name.
         vLower.includes(prohName.toLowerCase())
       })
-    })
-  ,
+    }),
   publicKey: string(),
+  recoveryPin: string(),
 })

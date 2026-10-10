@@ -4,6 +4,7 @@ import { defineApp } from "rwsdk/worker";
 import { Document } from "@/app/document";
 import { setCommonHeaders } from "@/app/headers";
 import { Home } from "@/app/pages/home";
+import AuthPage from "@/app/pages/auth";
 
 import { PsignUp } from "@/routes/auth"
 
@@ -11,12 +12,12 @@ export type AppContext = {};
 
 const authRoutes = [
   route("/signin", {
-    get: () => { },
+    get: AuthPage,
     post: () => { },
   }),
 
   route("/signup", {  // Create new user
-    get: () => { },
+    get: AuthPage,
     post: PsignUp,
   }),
 
