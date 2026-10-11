@@ -197,6 +197,3 @@ export function SignupForm() {
     </Card>
   )
 }
-
-/**
- */
