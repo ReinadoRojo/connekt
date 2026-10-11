@@ -2,6 +2,7 @@ import { defineConfig } from "vite";
 import { redwood } from "rwsdk/vite";
 import { cloudflare } from "@cloudflare/vite-plugin";
 import path from "path";
+import tailwindcss from '@tailwindcss/vite'
 
 export default defineConfig({
   plugins: [
@@ -9,13 +10,9 @@ export default defineConfig({
       viteEnvironment: { name: "worker" },
     }),
     redwood(),
+    tailwindcss()
   ],
   worker: {
     format: 'es',
   },
-  resolve: {
-    alias: {
-      '@': path.resolve(import.meta.dirname, './src')
-    }
-  }
 });

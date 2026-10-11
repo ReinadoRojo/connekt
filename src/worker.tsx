@@ -6,7 +6,7 @@ import { setCommonHeaders } from "@/app/headers";
 import { Home } from "@/app/pages/home";
 import AuthPage from "@/app/pages/auth";
 
-import { PsignUp } from "@/routes/auth"
+import { gIsUnique, PsignUp } from "@/routes/auth"
 
 export type AppContext = {};
 
@@ -56,6 +56,12 @@ const profileRoutes = [
   }),
 ]
 
+const apiRoutes = [
+  route('/auth/check', {
+    get: gIsUnique,
+  })
+]
+
 export default defineApp([
   setCommonHeaders(),
   ({ ctx }) => { ctx; /* setup ctx here */ },
@@ -88,6 +94,12 @@ export default defineApp([
     /*
     >>> PROFILE <<<
     */
-    prefix("/users", profileRoutes)
+    prefix("/users", profileRoutes),
+
+
+    /*
+    >>> API <<<
+    */
+    prefix("/api", apiRoutes)
   ]),
 ]);

@@ -19,6 +19,7 @@ export const Document: React.FC<{ children: React.ReactNode }> = ({
       />
       <link rel="modulepreload" href="/src/client.tsx" />
       <link rel="icon" href="/favicon.svg" />
+      <link rel="stylesheet" href="/src/styles.css" />
     </head>
     <body>
       {children}
