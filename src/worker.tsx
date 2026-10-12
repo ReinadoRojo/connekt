@@ -10,6 +10,10 @@ import { gIsUnique, pSignUp } from "@/app/api/auth"
 
 export type AppContext = {};
 
+export interface Env {
+  DB: D1Database;
+}
+
 const authRoutes = [
   route("/signin", {
     get: AuthPage,
