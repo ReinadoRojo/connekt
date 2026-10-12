@@ -6,19 +6,17 @@ import { setCommonHeaders } from "@/app/headers";
 import { Home } from "@/app/pages/home";
 import AuthPage from "@/app/pages/auth";
 
-import { gIsUnique, PsignUp } from "@/routes/auth"
+import { gIsUnique, pSignUp } from "@/app/api/auth"
 
 export type AppContext = {};
 
 const authRoutes = [
   route("/signin", {
     get: AuthPage,
-    post: () => { },
   }),
 
   route("/signup", {  // Create new user
     get: AuthPage,
-    post: PsignUp,
   }),
 
   route("/signout", {
@@ -59,6 +57,9 @@ const profileRoutes = [
 const apiRoutes = [
   route('/auth/check', {
     get: gIsUnique,
+  }),
+  route('/auth/create', {
+    post: pSignUp,
   })
 ]
 
