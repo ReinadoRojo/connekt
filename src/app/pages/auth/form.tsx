@@ -15,9 +15,11 @@ import { useCryptoWorker } from "./crypto";
 import { fetcher } from "@/lib/utils";
 import { DialogTrigger, DialogHeader, DialogTitle, DialogDescription, DialogFooter, Dialog } from "@/components/ui/dialog";
 import { Checkbox } from "@/components/ui/checkbox";
+import { encode } from "@/lib/z85";
 
 export function SignupForm() {
   const [isPending, setIsPending] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
 
   const [username, setUsername] = useState("");
@@ -38,7 +40,7 @@ export function SignupForm() {
   const { run } = useCryptoWorker();
 
   const formSubmit: SubmitEventHandler<HTMLFormElement> = async (e) => {
-    e.preventDefault(); setIsPending(true);
+    e.preventDefault(); setIsPending(true); setModalOpen(false);
     const f = new FormData(e.currentTarget);
 
     const u = f.get('username');
@@ -54,7 +56,7 @@ export function SignupForm() {
         console.error('Username not unique'); return;
       }
 
-      const salt = new Uint8Array(16);
+      const salt = crypto.getRandomValues(new Uint8Array(16));
       const masterPassword: any = await run(CryptoActions.DERIVATE_MASTER_PASSWD, { password, salt })
       console.log(masterPassword);
 
@@ -62,18 +64,47 @@ export function SignupForm() {
       console.log(masterPair)
 
       // TODO: Generate oneclick keys if user wanted.
-      console.log("User wants oneclick?", !!oneclick)
+      let authPair: { enabled: true, public: string, private: CryptoKey } | { enabled: false } = { enabled: false };
+      if (!!oneclick) {
+        const pair = await crypto.subtle.generateKey({ name: 'Ed25519' }, false, ['sign']);
+
+        const pub = await crypto.subtle.exportKey("raw", pair.publicKey);
+
+        authPair = {
+          enabled: true,
+          public: encode(new Uint8Array(pub)),
+          private: pair.privateKey
+        }
+      }
 
       console.log("final info:", {
         master: {
           private: masterPair.privateKey,
           public: masterPair.publicKey
         },
-        oneclick: {
-          enabled: false,
-        },
+        oneclick: authPair,
         salt,
         unique: masterPair.unique
+      })
+
+      const resData = await fetcher('/api/auth/signup', {
+        method: "POST",
+        body: JSON.stringify({
+          username,
+          masterKey: masterPair.publicKey,
+          authKey: authPair.enabled ? authPair.public : false,
+        })
+      })
+
+
+
+      console.log("package to indexeddb:", {
+        username,
+        masterKey: masterPair.privateKey,
+        oneclickEnabled: authPair.enabled,
+        oneclickKey: authPair.enabled ? authPair.private : null,
+        salt,
+        unique: masterPair.unique,
       })
     }
     catch (err) { console.error(err); }
@@ -87,6 +118,22 @@ export function SignupForm() {
     (isUnique === false) ? { message: "This username has been already taken" } : undefined,
     message ? { message } : undefined,
   ]
+
+  if (isPending) {
+    return (
+      <Card className="w-1/4">
+        <CardHeader className="text-center">
+          <CardTitle className="text-2xl">Create your account</CardTitle>
+          <CardDescription className="">
+            First, let's get you an username. Must be unique!
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="flex justify-center items-center">
+          <LoaderCircleIcon className="animate-spin size-12" />
+        </CardContent>
+      </Card>
+    )
+  }
 
   return (
     <Card className="w-1/4">
@@ -125,7 +172,7 @@ export function SignupForm() {
         </form>
       </CardContent>
       <CardFooter>
-        <DialogTrigger>
+        <DialogTrigger isOpen={modalOpen} onOpenChange={e => setModalOpen(e)}>
           <Button isDisabled={!isUnique || error || isPending} className="ml-auto">
             Continue
           </Button>
